@@ -7,6 +7,7 @@ export type Page =
   | 'ai-lab' 
   | 'timeline' 
   | 'vault' 
+  | 'secret-vault'
   | 'contact';
 
 export interface Project {
