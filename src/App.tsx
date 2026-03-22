@@ -7,6 +7,9 @@ import { Page } from './types';
 import { Starfield } from './components/3d/Starfield';
 import { HologramObject } from './components/3d/HologramObject';
 import { GuideBot } from './components/3d/GuideBot';
+import { HologramCharacter } from './components/3d/HologramCharacter';
+import { DataStream } from './components/3d/DataStream';
+import { NeuralNetwork } from './components/3d/NeuralNetwork';
 import { cn } from './lib/utils';
 import gsap from 'gsap';
 import * as THREE from 'three';
@@ -194,12 +197,106 @@ export default function App() {
                 </Float>
                 
                 <GuideBot />
+                <HologramCharacter position={[-5, 0, -5]} label="SYSTEM_ARCHITECT" scale={1.2} />
+                <DataStream count={100} position={[0, 0, -10]} color="#00f2ff" />
                 
                 <NavigationNode position={[-8, 4, 0]} label="About" icon={<Terminal />} onClick={() => handleNavigate('about')} />
                 <NavigationNode position={[8, 4, 0]} label="Skills" icon={<Cpu />} onClick={() => handleNavigate('skills')} />
                 <NavigationNode position={[-8, -4, 0]} label="Projects" icon={<Rocket />} onClick={() => handleNavigate('projects')} />
                 <NavigationNode position={[8, -4, 0]} label="AI Lab" icon={<Brain />} onClick={() => handleNavigate('ai-lab')} />
                 <NavigationNode position={[0, -8, 0]} label="Timeline" icon={<Calendar />} onClick={() => handleNavigate('timeline')} />
+              </group>
+            )}
+
+            {currentPage === 'about' && (
+              <group>
+                <HologramCharacter position={[0, -2, 0]} scale={3} label="MD_SAMIUL_AHASAN" />
+                <DataStream count={200} position={[0, 0, -5]} color="#ff00ff" />
+              </group>
+            )}
+
+            {currentPage === 'skills' && (
+              <group>
+                <Float speed={3}>
+                  <HologramObject 
+                    geometry={<torusGeometry args={[4, 0.1, 16, 100]} />}
+                    color="#00f2ff"
+                    opacity={0.5}
+                  />
+                  <HologramObject 
+                    geometry={<torusGeometry args={[3, 0.1, 16, 100]} />}
+                    rotation={[Math.PI / 2, 0, 0]}
+                    color="#ff00ff"
+                    opacity={0.5}
+                  />
+                </Float>
+                <DataStream count={150} position={[0, 0, 0]} color="#00f2ff" />
+              </group>
+            )}
+
+            {currentPage === 'projects' && (
+              <group>
+                {[...Array(5)].map((_, i) => (
+                  <Float key={i} speed={2} position={[(i - 2) * 5, Math.sin(i) * 2, -5]}>
+                    <HologramObject 
+                      geometry={<boxGeometry args={[2, 2, 2]} />}
+                      color={i % 2 === 0 ? "#00f2ff" : "#ff00ff"}
+                      opacity={0.4}
+                    />
+                  </Float>
+                ))}
+                <HologramCharacter position={[10, -2, -5]} scale={2} label="PROJECT_GUARDIAN" />
+              </group>
+            )}
+
+            {currentPage === 'ai-lab' && (
+              <group>
+                <NeuralNetwork count={40} />
+                <HologramCharacter position={[5, -2, 0]} scale={2} label="AI_CORE_UNIT" />
+                <DataStream count={100} position={[0, 0, -5]} color="#00f2ff" />
+              </group>
+            )}
+
+            {currentPage === 'timeline' && (
+              <group>
+                <Float speed={1}>
+                  <HologramObject 
+                    geometry={<cylinderGeometry args={[5, 5, 0.2, 32]} />}
+                    rotation={[Math.PI / 2, 0, 0]}
+                    color="#00f2ff"
+                    opacity={0.1}
+                  />
+                </Float>
+                <HologramCharacter position={[-6, -2, 0]} scale={2} label="CHRONOS_ARCHIVE" />
+                <DataStream count={50} position={[0, 0, -10]} color="#00f2ff" />
+              </group>
+            )}
+
+            {currentPage === 'contact' && (
+              <group>
+                <Float speed={2}>
+                  <HologramObject 
+                    geometry={<octahedronGeometry args={[3]} />}
+                    color="#ff00ff"
+                    opacity={0.3}
+                  />
+                </Float>
+                <HologramCharacter position={[6, -2, 0]} scale={2} label="COMM_OFFICER" />
+                <DataStream count={80} position={[0, 0, -5]} color="#ff00ff" />
+              </group>
+            )}
+
+            {currentPage === 'secret-vault' && (
+              <group>
+                <Float speed={4}>
+                  <HologramObject 
+                    geometry={<icosahedronGeometry args={[2, 0]} />}
+                    color="#ffd700"
+                    opacity={0.6}
+                  />
+                </Float>
+                <HologramCharacter position={[0, -3, 0]} scale={4} label="VAULT_KEEPER" />
+                <DataStream count={300} position={[0, 0, 0]} color="#ffd700" />
               </group>
             )}
 
@@ -228,6 +325,11 @@ export default function App() {
           />
         </Canvas>
       </div>
+
+      {/* Scanline Overlay */}
+      <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
+      
+      <div className="fixed inset-0 pointer-events-none z-[101] bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.4)_100%)]" />
 
       {/* 2D UI Layer */}
       <AnimatePresence mode="wait">
@@ -319,8 +421,11 @@ export default function App() {
                   className="absolute top-0 right-0 w-full md:w-[600px] h-full z-40 bg-slate-950/80 backdrop-blur-2xl border-l border-cyan-900/30 p-12 overflow-y-auto"
                 >
                   <button 
-                    onClick={() => handleNavigate('command-center')}
-                    className="mb-8 text-cyan-400 font-mono text-xs uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors"
+                    onClick={() => {
+                      console.log("Navigating to command-center");
+                      handleNavigate('command-center');
+                    }}
+                    className="mb-8 text-cyan-400 font-mono text-xs uppercase tracking-widest flex items-center gap-2 hover:text-white transition-colors pointer-events-auto"
                   >
                     <ArrowRight className="rotate-180" size={14} />
                     Back to Hub
@@ -448,11 +553,52 @@ const SkillsContent = () => (
     </header>
 
     <div className="space-y-8">
-      <SkillCategory title="Backend Core" skills={['C', 'Java', 'Python', 'C# .NET']} />
-      <SkillCategory title="Data & AI" skills={['NumPy', 'Pandas', 'Matplotlib', 'Seaborn', 'n8n', 'Zapier']} />
+      <div className="grid gap-4">
+        <LanguageCard 
+          name="C" 
+          info="The foundation of modern computing. High-performance, low-level language used for systems, kernels, and embedded devices." 
+          level={85}
+        />
+        <LanguageCard 
+          name="C# .NET" 
+          info="A versatile, object-oriented language by Microsoft. Powering enterprise apps, game development with Unity, and robust web APIs." 
+          level={70}
+        />
+        <LanguageCard 
+          name="Java" 
+          info="Write once, run anywhere. The backbone of enterprise software, Android apps, and large-scale distributed systems." 
+          level={75}
+        />
+        <LanguageCard 
+          name="Python" 
+          info="The language of AI and Data Science. Known for its readability and vast ecosystem (NumPy, Pandas, TensorFlow)." 
+          level={88}
+        />
+      </div>
+
+      <SkillCategory title="Data & AI Automation" skills={['n8n', 'Zapier', 'Workflow Automation']} />
+      <SkillCategory title="Visualization" skills={['Matplotlib', 'Seaborn', 'Plotly']} />
       <SkillCategory title="Frontend" skills={['HTML', 'CSS', 'React (Learning)']} />
     </div>
   </motion.div>
+);
+
+const LanguageCard = ({ name, info, level }: { name: string, info: string, level: number }) => (
+  <div className="p-4 border border-cyan-900/30 bg-cyan-950/10 rounded-xl hover:border-cyan-400 transition-all group">
+    <div className="flex justify-between items-center mb-2">
+      <h3 className="text-xl font-bold text-white group-hover:text-cyan-400">{name}</h3>
+      <span className="text-[10px] font-mono text-cyan-600 uppercase">Power Level: {level}%</span>
+    </div>
+    <p className="text-xs text-slate-400 mb-4 leading-relaxed">{info}</p>
+    <div className="w-full h-1 bg-cyan-950 rounded-full overflow-hidden">
+      <motion.div 
+        className="h-full bg-cyan-500"
+        initial={{ width: 0 }}
+        animate={{ width: `${level}%` }}
+        transition={{ duration: 1, delay: 0.5 }}
+      />
+    </div>
+  </div>
 );
 
 const SkillCategory = ({ title, skills }: { title: string, skills: string[] }) => (
